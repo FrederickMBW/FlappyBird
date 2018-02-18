@@ -57,8 +57,8 @@ all_sprites.add(pipes)
 pygame.display.set_caption("Flappy Bird")
 clock = pygame.time.Clock()
 
-image = pygame.image.load("bird2.jpg")
-pillar = pygame.image.load("pillar.jpg")
+#image = pygame.image.load("bird2.jpg")
+#pillar = pygame.image.load("pillar.jpg")
 #def drawRect(x, y, width, height):
 #    pygame.draw.rect(display, (0,255,0), (x,y,width,height),2)
 
