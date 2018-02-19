@@ -73,16 +73,10 @@ all_sprites.add(pipes)
 pygame.display.set_caption("Flappy Bird")
 clock = pygame.time.Clock()
 
-#image = pygame.image.load("bird2.jpg")
-#pillar = pygame.image.load("pillar.jpg")
-#def drawRect(x, y, width, height):
-#    pygame.draw.rect(display, (0,255,0), (x,y,width,height),2)
-
 crashed = False
 white = (255, 255, 255)
 
 font = pygame.font.SysFont("comicsansms",24)
-#text = font.render("Hello World", True, (0,123,234))
     
 upper_xp = 200
 upper_yp = 0
@@ -130,6 +124,7 @@ while not crashed:
         y += 1
     else:
         y += y2
+        
     y2 = 0
 
     upper_xp -= speed
@@ -141,42 +136,41 @@ while not crashed:
 
     adjust = random.randint(0,200)
     adjust2 = random.randint(50,100)
+    adjust3 = random.randint(50,100)
 
-    if (upper_xp == 0):
+    if (upper_xp <= 0):
         upper_yp = oupper_yp - adjust
         upper_xp = screenWidth
-#    if (lower_xp == 0):
         lower_yp = olower_yp - adjust
         lower_xp = screenWidth
-    if (upper_xp2 == 0):
+    if (upper_xp2 <= 0):
         upper_yp2 = oupper_yp2 - adjust2
         upper_xp2 = screenWidth
-#    if (lower_xp2 == 0):
         lower_yp2 = olower_yp2 - adjust2
         lower_xp2 = screenWidth
-    if (upper_xp3 == 0):
-        upper_yp3 = oupper_yp2 - adjust2
+    if (upper_xp3 <= 0):
+        upper_yp3 = oupper_yp3 - adjust3
         upper_xp3 = screenWidth
-#    if (lower_xp2 == 0):
-        lower_yp3 = olower_yp2 - adjust2
+        lower_yp3 = olower_yp3 - adjust3
         lower_xp3 = screenWidth
         lapCntr += 1
-        if(lapCntr > 2):
-            speed += 1
-            lapCntr = 0
-    
-    #game_display.fill(white)
 
+        
+    if(lapCntr > 2):
+        speed += 1
+        lapCntr = 0
+    
     longPipe.update(lower_xp, lower_yp)
     shortPipe.update(upper_xp, upper_yp)
     longPipe2.update(lower_xp2, lower_yp2)
     shortPipe2.update(upper_xp2, upper_yp2)
     longPipe3.update(lower_xp3, lower_yp3)
     shortPipe3.update(upper_xp3, upper_yp3)
+    
     #pipeBottom2.update(lower_xp2, lower_yp)
     #pipeTop2.update(upper_xp2, upper_yp)
+    
     bird.update(x, y)
-    #game_display.blit(text, (20,20))
     all_sprites.draw(game_display)
 
     pygame.display.update()
@@ -185,6 +179,7 @@ while not crashed:
     if pygame.sprite.spritecollide(bird, pipes, True):
         print ("Game Over")
         crashed = True
+        
     
     
 pygame.quit()
