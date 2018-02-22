@@ -1,0 +1,229 @@
+#WE SHOULD REPLACE THE LINKED LIST WITH A LIST (SOMETHING BUILT INTO PYTHON!)
+
+import pygame
+import random
+from pygame.locals import *
+
+#Variables
+#Pipes
+pipeGap = 200
+pipeCount = 10
+
+#Screen
+screenWidth = 288
+screenHeight = 512
+
+#Sprites
+bird_sprites = pygame.sprite.Group()
+kill_sprites = pygame.sprite.Group()
+all_sprites = pygame.sprite.Group()
+
+#Background Class
+class Background(pygame.sprite.Sprite):
+    def __init__(self, image_file, location):
+        pygame.sprite.Sprite.__init__(self) 
+        self.image = pygame.image.load(image_file)
+        self.rect = self.image.get_rect()
+        self.rect.left, self.rect.top = location
+
+#Mister Flappy Bird
+class Bird(pygame.sprite.Sprite):
+    #Variables
+    tap_velocity = -20
+    acceleration = 1.5
+    max_velocity = 30
+
+    #Constructor
+    def __init__(self, x, y):
+        pygame.sprite.Sprite.__init__(self)
+        self.velocity = 0
+        self.angle = 0
+        self.image = pygame.image.load("redbird-midflap.png").convert_alpha()
+        self.rect = self.image.get_rect()
+        self.rect.center = (x, y)
+
+    #Misty Flappy Bird wants to fly!
+    def tap(self):
+        self.velocity = self.tap_velocity;
+
+    def update(self):
+        #Prevent Mister Flappy Bird from going above the top of the screen
+        if self.rect.top + self.velocity < 0:
+            self.velocity = -self.rect.top
+
+        #If Mister Flappy Bird is at top of the screen with a negative velocity, change direction
+        if self.rect.top <= 0 and self.velocity <= 0:
+            self.velocity = -self.velocity / 10
+
+        #Prevent Mister Flappy Bird from going too fast downward
+        if self.velocity < self.max_velocity:
+            self.velocity += self.acceleration
+
+        #Move Mister Flappy Bird
+        self.rect.y += self.velocity
+
+        #Rotate the Angle of Mister Flappy Bird
+        #Flap Mister Flappy Birds wings when velocity is negative
+
+#Mister Pipe
+class Pipe(pygame.sprite.Sprite):
+    pipeVelocity = -5
+    
+    def __init__(self, x, y, color, isBottom):
+        pygame.sprite.Sprite.__init__(self)
+
+        if color == "green":
+            image = pygame.image.load("pipe-green.png").convert_alpha()
+        else:
+            image = pygame.image.load("pipe-red.png").convert_alpha()
+            
+        self.isBottom = isBottom
+
+        # TODO - There must be a better way?!?!?!
+        # TODO - make the image a mirror image (no need to flip it)!
+        if isBottom:
+            self.image = image
+        else:
+            self.image = pygame.transform.flip(image, False, True)
+
+        self.rect = self.image.get_rect()
+        
+        if isBottom:
+            self.rect.topleft = (x, y)
+        else:
+            self.rect.bottomleft = (x, y)
+
+    def update(self, x = None, y = None):
+        if x == None or y == None:
+            self.rect.x += self.pipeVelocity
+        else:
+            if self.isBottom:
+                self.rect.topleft = (x, y)
+            else:
+                self.rect.bottomleft = (x, y)
+
+        if color == "red":
+            self.pipeVelocity -= 6
+            
+
+#Mister Pipe Set
+class PipeSet():
+    buffer = 100
+    gap = 200
+
+    def __init__(self, x, color, group):
+        self.gapPos = random.randrange(self.buffer, screenHeight - self.buffer)
+
+        self.topPipe = Pipe(x, self.gapPos - self.gap / 2, color, False)
+        self.botPipe = Pipe(x, self.gapPos + self.gap / 2, color, True)
+
+        group.add(self.topPipe)
+        group.add(self.botPipe)
+
+    def update(self, prev):
+        self.topPipe.update()
+        self.botPipe.update()
+        if self.topPipe.rect.right < 0:
+            self.gapPos = random.randrange(self.buffer, screenHeight - self.buffer)
+            self.topPipe.update(prev.topPipe.rect.x + pipeGap, self.gapPos - self.gap / 2)
+            self.botPipe.update(prev.topPipe.rect.x + pipeGap, self.gapPos + self.gap / 2)
+
+    def setGapPos(self):
+        self.gapPos = random.randrange(self.buffer, screenHeight - self.buffer)
+
+# Structure for a Node
+class Node:
+
+    def __init__(self, data):
+        self.data = data 
+        self.next = None
+        self.prev = None
+
+#Ripped from https://www.geeksforgeeks.org/circular-linked-list-set-2-traversal/
+#Edited to make double linked
+class CircularLinkedList:
+
+    # Constructor to create a empty circular linked list
+    def __init__(self):
+        self.head = None
+
+    # Function to insert a node at the beginning of a
+    # circular linked list
+    def push(self, data):
+        ptr1 = Node(data)
+
+        # If linked list is not None then set the next of
+        # last node
+        if self.head is None:
+            ptr1.next = ptr1
+            ptr1.prev = ptr1
+            self.head = ptr1
+            
+        else:
+            ptr1.prev = self.head.prev
+            ptr1.next = self.head
+            self.head.prev.next = ptr1
+            self.head.prev = ptr1
+ 
+    # Function to update nodes
+    def updateList(self):
+        temp = self.head
+        if self.head is not None:
+            while(True):
+                temp.data.update(temp.prev.data),
+                temp = temp.next
+                if (temp == self.head):
+                    break
+
+#Background
+BackGround = Background('background-day.png', [0,0])
+all_sprites.add(BackGround)
+
+#Screen
+game_display = pygame.display.set_mode((screenWidth,screenHeight))
+
+#Create the Pipes
+pipes = CircularLinkedList()
+for x in range(0, pipeCount):
+    if x == pipeCount - 1:
+        nextPipeSet = PipeSet(x * pipeGap + screenWidth, "red", kill_sprites)
+    else:
+        nextPipeSet = PipeSet(x * pipeGap + screenWidth, "green", kill_sprites)
+    pipes.push(nextPipeSet)
+
+#Bird
+bird = Bird(screenWidth / 3, screenHeight / 2)
+all_sprites.add(bird)
+
+#Clock
+clock = pygame.time.Clock()
+
+#Sprites
+all_sprites.add(bird_sprites)
+all_sprites.add(kill_sprites)
+all_sprites.draw(game_display)
+pygame.display.flip()
+
+#Play the game
+running = True
+started = False
+
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONDOWN:
+            bird.tap()
+            if not started:
+                started = True
+        if event.type == pygame.QUIT:
+            running = False
+            
+    if pygame.sprite.spritecollide(bird, kill_sprites, True):
+        started = false
+
+    if started:
+        bird.update()
+        pipes.updateList()
+        all_sprites.draw(game_display)
+        pygame.display.update()
+
+    clock.tick(40)
