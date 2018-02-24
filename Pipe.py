@@ -5,6 +5,10 @@ class Pipe(pygame.sprite.Sprite):
 
     #TODO - Add default constructor
 
+    #Returns an image of the pipe when givin a color
+    def get_image(self, color):
+        return pygame.image.load("pipe-" + color + ".png").convert_alpha()
+
     #Constructor
     def __init__(self, left, y, velocity, color, isBottom):
         pygame.sprite.Sprite.__init__(self)
@@ -14,7 +18,7 @@ class Pipe(pygame.sprite.Sprite):
         self.isBottom = isBottom
         self.color = color
 
-        self.image = pygame.image.load("pipe-" + color + ".jpg").convert_alpha()
+        self.image = self.get_image(color)
         self.rect = self.image.get_rect()
 
         #Set the position
@@ -46,4 +50,4 @@ class Pipe(pygame.sprite.Sprite):
     def set_color(self, color):
         if self.color != color:
             self.color = color
-            self.image = pygame.image.load("pipe-" + color + ".jpg").convert_alpha()
+            self.image = self.get_image(color)

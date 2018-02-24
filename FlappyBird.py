@@ -27,14 +27,14 @@ background_time = random.choice(["day", "night"])
 background_velocity = -1
 
 #Ground
-ground_offset = 50           #How far the ground is offset from the bottom of the screen
+ground_offset = 100           #How far the ground is offset from the bottom of the screen
 ground_top = screen_height - ground_offset #The location of the top of the ground
 
 #Pipes
-pipe_count = 3             #TODO - This should be dynamically based on the screen width in the future
 pipe_gap = 100              #The size of the vertical gap between pipes
 pipe_spacing = 200          #The spacing from the left of a pipeset to the next pipeset
 pipe_gap_variance = 100     #How much the location of the pipeGap is allowed to vary
+pipe_count = int(screen_width / pipe_spacing) + 1 #Number of pipes in the pipe deque
 
 #Overall
 game_center = ground_top / 2 #The center of the gameplay
@@ -45,12 +45,21 @@ bird_start_x = screen_width / 3          #The starting x position for the center
 bird_start_y = game_center        #The starting y position for the center of the bird
 
 #Random Images
+main_message_x = screen_width / 2
+main_message_y = game_center / 2
+
+tap_image = pygame.image.load("tap.png")
+tap_image_rect = tap_image.get_rect()
+tap_image_rect.center = (screen_width / 2, game_center)
 start_image = pygame.image.load("start.png")
 start_image_rect = start_image.get_rect()
-start_image_rect.center = (screen_width / 2, game_center)
+start_image_rect.center = (main_message_x, main_message_y)
 gameover_image = pygame.image.load("gameover.png")
 gameover_image_rect = gameover_image.get_rect()
-gameover_image_rect.center = (screen_width / 2, game_center / 2)
+gameover_image_rect.center = (main_message_x, main_message_y)
+getready_image = pygame.image.load("getready.png")
+getready_image_rect = getready_image.get_rect()
+getready_image_rect.center = (main_message_x, main_message_y)
 
 #Create sprite groups
 bird_sprites = pygame.sprite.Group()
@@ -86,7 +95,7 @@ def reset_pipes():
 #Use defalt values for the pipes created
 pipes = deque()
 for i in range(pipe_count):        
-    pipe_set = PipeSet(0, 0, game_speed, "green", pipe_gap, pipe_sprites)
+    pipe_set = PipeSet(0, 0, game_speed, "red", pipe_gap, pipe_sprites)
     pipes.append(pipe_set)
 
 #Position all the pipes
@@ -138,8 +147,8 @@ clock = pygame.time.Clock()
 #Moves a pipe that is off the left of the screen to after the farthest right pipe
 def move_pipes():
     if pipes[0].isDead():
-        temp = pipes.popleft()
         left = pipes[-1].get_left() + pipe_spacing
+        temp = pipes.popleft()
         gap_center = get_pipe_gap()
         temp.update(left, gap_center, pipe_gap)
         pipes.append(temp)
@@ -148,9 +157,9 @@ def move_pipes():
 #This only works when the velocity is a negative for the deque!
 def deque_update(deque):
     if deque[0].isDead():
-        temp = deque.popleft()
         left = deque[-1].get_right()
         top = deque[-1].get_top()
+        temp = deque.popleft()
         temp.update(left, top)
         deque.append(temp)
 
@@ -211,7 +220,8 @@ def intro_screen():
         deque_update(grounds)
         deque_update(backgrounds)
         draw_all_sprites()
-        game_display.blit(start_image, start_image_rect)
+        game_display.blit(tap_image, tap_image_rect)
+        game_display.blit(getready_image, getready_image_rect)
         pygame.display.update()
         clock.tick(40)
 
