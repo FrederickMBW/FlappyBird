@@ -28,7 +28,7 @@ pygame.mixer.init()
 
 # load sound for collision
 # must be a wav file
-# effect = pygame.mixer.Sound("sound_effects.wav")
+effect = pygame.mixer.Sound("sound_effects.wav")
 
 # load music for background
 pygame.mixer.music.load("theme.ogg")
@@ -280,6 +280,7 @@ def play_state():
 
         #If bird collides with the ground or a pipe, exit active game
         if pygame.sprite.spritecollide(bird, pipe_sprites, False) or pygame.sprite.spritecollide(bird, ground_sprites, False):
+            effect.play()
             bird.velocity = 0
             running = False
 
