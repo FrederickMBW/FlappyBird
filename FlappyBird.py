@@ -9,7 +9,7 @@
 #Have the bird move up and down at the get_ready screen?
 #Update collision detection? Only do collison detection for the current pipe set? Detection for ground based on birds height?
 
-autoPlay = True
+autoPlay = False
 
 import pygame
 import random
@@ -129,13 +129,13 @@ def reset_pipes():
         pipes[i].set_color(color)
 
 #Create a deque to hold all the pipes
-#Use defalt values for the pipes created
+#Pass defalt values for the pipes
 pipes = deque()
 for i in range(pipe_count):        
     pipe_set = PipeSet(0, 0, game_speed, "red", pipe_gap, pipe_sprites)
     pipes.append(pipe_set)
 
-#Position all the pipes
+#Position and color all the pipes
 reset_pipes()
 
 #Bird
@@ -206,12 +206,12 @@ def deque_update(deque):
         temp.update(left, top)
         deque.append(temp)
 
-
+#Resets the game to the starting position
 def reset():
     bird.reset(bird_start_x, bird_start_y)
     scoreboard.update(0)
     reset_pipes()
-    all_sprites.draw(game_display)
+    draw_all_sprites()
     pygame.display.update()
 
 #Games States
@@ -296,7 +296,7 @@ def get_ready_state():
     
     running = True
     while running:
-        #Exit intro screen if any button is tapped or mouse button hit
+        #Exit get ready screen if any button is tapped or mouse button hit
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONDOWN:
                 bird.tap()
