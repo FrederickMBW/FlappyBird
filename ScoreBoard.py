@@ -9,8 +9,11 @@ class ScoreBoard(pygame.sprite.Sprite):
         self.font = pygame.font.SysFont("comicsansms", 32)
         self.x = xpos
         self.y = ypos
-    def update(self, score):
-        #font = pygame.font.Font(None, 36)
-        text = self.font.render("Score: " + str(score), 1, (10, 10, 10))
+        self.score = 0
+    def update(self, score = None):
+        if score != None:
+            self.score = score
+
+        text = self.font.render(str(self.score), 1, (10, 10, 10))
         textpos = text.get_rect().center = self.x, self.y
         self.background.blit(text, textpos)

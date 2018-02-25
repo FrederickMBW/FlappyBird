@@ -29,7 +29,15 @@ class PipeSet():
     def get_left(self):
         return self.topPipe.get_left()
 
+    #Returns the right most position of the pipe set
+    def get_right(self):
+        return self.topPipe.get_right()
+
     #Set the color of the pipe set
     def set_color(self, color):
         self.topPipe.set_color(color)
         self.botPipe.set_color(color)
+
+    #Returns the top position of the bottom tube
+    def get_bottoms_top(self):
+        return self.botPipe.get_top()

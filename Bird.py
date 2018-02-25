@@ -9,6 +9,11 @@ class Bird(pygame.sprite.Sprite):
     max_velocity = 20
     max_angle = -90
 
+    #TODO - enum
+    UP = 0
+    MID = 1
+    DOWN = 2
+
     #Used for determining the angle of Mister Flappy Bird
     max_angle_velocity_ratio = max_angle / max_velocity
 
@@ -55,28 +60,32 @@ class Bird(pygame.sprite.Sprite):
             damper = 0.1 #Damper his speed after changing direction
             self.velocity = -self.velocity * damper
 
+        #Update Mister Flappy Bird's y coordinate
+        self.rect.y += self.velocity
+        
+        #Increase Mister Flappy Birds velocity
         #Prevent Mister Flappy Bird from going too fast downward
         if self.velocity < self.max_velocity:
             self.velocity += self.acceleration
-
-        #Update Mister Flappy Bird's y coordinate
-        self.rect.y += self.velocity
         
         #Flap Mister Flappy Bird's wings once after tapping
         #Decide what image of Mister Flappy Bird to use
         if self.velocity < Bird.tap_velocity * 0.75:
-            image = self.images[0] 
+            image = self.images[self.UP] 
         elif self.velocity < Bird.tap_velocity * 0.5:
-            image = self.images[1]
+            image = self.images[self.MID]
         elif self.velocity < Bird.tap_velocity * 0.25:
-            image = self.images[2]
+            image = self.images[self.DOWN]
         elif self.velocity < 0:
-            image = self.images[1]
+            image = self.images[self.MID]
         else:
-            image = self.images[0]
+            image = self.images[self.UP]
 
         #Calculate Mister Flappy Bird's angle
-        angle = Bird.max_angle_velocity_ratio * self.velocity
+        if self.velocity < self.tap_velocity / 2:
+            angle = Bird.max_angle_velocity_ratio * self.tap_velocity / 2
+        else:
+            angle = Bird.max_angle_velocity_ratio * self.velocity
 
         #Rotate the image of Mister Flappy Bird
         image = pygame.transform.rotate(image, angle)
@@ -86,3 +95,11 @@ class Bird(pygame.sprite.Sprite):
         self.image = image
         self.rect = self.image.get_rect()
         self.rect.center = center
+
+    #Return the left most position of the bird
+    def get_left(self):
+        return self.rect.left
+
+    #Retrun the bottom position of the bird
+    def get_bottom(self):
+        return self.rect.bottom

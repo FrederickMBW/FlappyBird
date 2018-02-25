@@ -46,6 +46,14 @@ class Pipe(pygame.sprite.Sprite):
     def get_left(self):
         return self.rect.left
 
+    #Returns the right most position of the pipe
+    def get_right(self):
+        return self.rect.right
+
+    #Return the position of the top of the pipe
+    def get_top(self):
+        return self.rect.top
+
     #Set the color of the pipe
     def set_color(self, color):
         if self.color != color:
