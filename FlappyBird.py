@@ -3,10 +3,9 @@
 #Add exceptions for when illegal functions are passed to an object
 #Encapsulation of objects
 #Add sounds!
-#Add the ability to exit the game?
 #Make the red pipes appear randomly?
 #Increase the difficulty of the game based on score?
-#Moving Pipes?
+#Pipes that move up and down?
 #Have the bird move up and down at the get_ready screen?
 #Update collision detection? Only do collison detection for the current pipe set? Detection for ground based on birds height?
 
@@ -43,6 +42,7 @@ welcome_state = 0
 get_ready_state = 1
 play_state = 2
 dead_state = 3
+quit_state = 4
 
 #Screen
 screen_width = 1000      #Width of the screen 288 is standard
@@ -231,6 +231,8 @@ def dead_state():
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONDOWN:
                 running = False
+            if event.type == pygame.QUIT:
+                return quit_state
 
         #Update the display
         draw_all_sprites()
@@ -267,6 +269,8 @@ def play_state():
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONDOWN:
                 bird.tap()
+            if event.type == pygame.QUIT:
+                return quit_state
 
         #Update the sprites and display
         all_sprites.update()
@@ -297,6 +301,8 @@ def get_ready_state():
             if event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONDOWN:
                 bird.tap()
                 running = False
+            if event.type == pygame.QUIT:
+                return quit_state
 
         #Update the pertinent sprites and display
         background_sprites.update()
@@ -323,6 +329,8 @@ def welcome_state():
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN and start_button.pressed(pygame.mouse.get_pos()):
                 running = False
+            if event.type == pygame.QUIT:
+                return quit_state
 
         #Update the pertinent sprites and display
         background_sprites.update()
@@ -352,9 +360,10 @@ def play_game(next_state):
         elif next_state == dead_state:
             next_state = dead_state()
         else:
-            running = false
+            running = False
 
 #Play the game!
 play_game(welcome_state)
 
-pygame.QUIT()
+#Exit the game!
+pygame.quit()
