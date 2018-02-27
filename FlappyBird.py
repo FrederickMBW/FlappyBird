@@ -4,7 +4,7 @@
 #   Revision: 1.0
 #
 #   Authors:
-#       Federick Wertz
+#       Federick Wirtz
 #       Garth Scheck
 #
 ########################################################
