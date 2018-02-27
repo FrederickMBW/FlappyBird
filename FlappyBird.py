@@ -14,11 +14,15 @@
 #Add exceptions when images are loaded
 #Add exceptions for when illegal functions are passed to an object
 #Encapsulation of objects
+<<<<<<< HEAD
 #Add more sounds!
 #Add the ability to exit the game?
+=======
+#Add sounds!
+>>>>>>> 032a8710bebd59b101b69be3ac716c047f09658a
 #Make the red pipes appear randomly?
 #Increase the difficulty of the game based on score?
-#Moving Pipes?
+#Pipes that move up and down?
 #Have the bird move up and down at the get_ready screen?
 #Update collision detection? Only do collison detection for the current pipe set? Detection for ground based on birds height?
 
@@ -56,6 +60,7 @@ welcome_state = 0
 get_ready_state = 1
 play_state = 2
 dead_state = 3
+quit_state = 4
 
 #Screen
 screen_width = 1000      #Width of the screen 288 is standard
@@ -145,13 +150,13 @@ def reset_pipes():
         pipes[i].set_color(color)
 
 #Create a deque to hold all the pipes
-#Use defalt values for the pipes created
+#Pass defalt values for the pipes
 pipes = deque()
 for i in range(pipe_count):        
     pipe_set = PipeSet(0, 0, game_speed, "red", pipe_gap, pipe_sprites)
     pipes.append(pipe_set)
 
-#Position all the pipes
+#Position and color all the pipes
 reset_pipes()
 
 #Bird
@@ -222,6 +227,7 @@ def deque_update(deque):
         temp.update(left, top)
         deque.append(temp)
 
+<<<<<<< HEAD
 def checkHighScore(currentScore = 0):
     try:
         file = open('hiScore.txt', 'r') 
@@ -238,12 +244,15 @@ def checkHighScore(currentScore = 0):
         lastScore = currentScore
     return lastScore
         
+=======
+#Resets the game to the starting position
+>>>>>>> 032a8710bebd59b101b69be3ac716c047f09658a
 def reset():
     bird.reset(bird_start_x, bird_start_y)
     scoreboard.update(0)
     hiScoreboard.update(checkHighScore())
     reset_pipes()
-    all_sprites.draw(game_display)
+    draw_all_sprites()
     pygame.display.update()
 
 #Games States
@@ -263,6 +272,8 @@ def dead_state():
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONDOWN:
                 running = False
+            if event.type == pygame.QUIT:
+                return quit_state
 
         #Update the display
         draw_all_sprites()
@@ -302,6 +313,8 @@ def play_state():
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONDOWN:
                 bird.tap()
+            if event.type == pygame.QUIT:
+                return quit_state
 
         #Update the sprites and display
         all_sprites.update()
@@ -334,11 +347,13 @@ def get_ready_state():
     
     running = True
     while running:
-        #Exit intro screen if any button is tapped or mouse button hit
+        #Exit get ready screen if any button is tapped or mouse button hit
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONDOWN:
                 bird.tap()
                 running = False
+            if event.type == pygame.QUIT:
+                return quit_state
 
         #Update the pertinent sprites and display
         background_sprites.update()
@@ -365,6 +380,8 @@ def welcome_state():
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN and start_button.pressed(pygame.mouse.get_pos()):
                 running = False
+            if event.type == pygame.QUIT:
+                return quit_state
 
         #Update the pertinent sprites and display
         background_sprites.update()
@@ -394,9 +411,10 @@ def play_game(next_state):
         elif next_state == dead_state:
             next_state = dead_state()
         else:
-            running = false
+            running = False
 
 #Play the game!
 play_game(welcome_state)
 
-pygame.QUIT()
+#Exit the game!
+pygame.quit()
