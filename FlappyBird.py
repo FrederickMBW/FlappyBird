@@ -14,12 +14,9 @@
 #Add exceptions when images are loaded
 #Add exceptions for when illegal functions are passed to an object
 #Encapsulation of objects
-<<<<<<< HEAD
 #Add more sounds!
 #Add the ability to exit the game?
-=======
 #Add sounds!
->>>>>>> 032a8710bebd59b101b69be3ac716c047f09658a
 #Make the red pipes appear randomly?
 #Increase the difficulty of the game based on score?
 #Pipes that move up and down?
@@ -227,7 +224,6 @@ def deque_update(deque):
         temp.update(left, top)
         deque.append(temp)
 
-<<<<<<< HEAD
 def checkHighScore(currentScore = 0):
     try:
         file = open('hiScore.txt', 'r') 
@@ -244,9 +240,7 @@ def checkHighScore(currentScore = 0):
         lastScore = currentScore
     return lastScore
         
-=======
 #Resets the game to the starting position
->>>>>>> 032a8710bebd59b101b69be3ac716c047f09658a
 def reset():
     bird.reset(bird_start_x, bird_start_y)
     scoreboard.update(0)
