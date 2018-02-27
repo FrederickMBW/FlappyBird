@@ -10,11 +10,12 @@
 #Have the bird move up and down at the get_ready screen?
 #Update collision detection? Only do collison detection for the current pipe set? Detection for ground based on birds height?
 
-autoPlay = True
+autoPlay = False
 
 import pygame
 import random
 import math
+from TextBox import TextBox
 from PipeSet import PipeSet
 from Bird import Bird
 from Ground import Ground
@@ -106,7 +107,10 @@ all_sprites = pygame.sprite.Group()
 game_display = pygame.display.set_mode((screen_width,screen_height))  #Create the display for the game
 
 #Scoreboard
-scoreboard = ScoreBoard(game_display, scoreboard_x, scoreboard_y)
+#scoreboard = ScoreBoard(game_display, scoreboard_x, scoreboard_y)
+# Moved location to bottom right and added label
+scoreboard = ScoreBoard(game_display, screen_width - 250, screen_height - ground_offset/2, "Score:")
+hiScoreboard = ScoreBoard(game_display, 10, screen_height - ground_offset/2, "Best:")
 
 #Pipes
 #Function for calculating center of gap
@@ -206,10 +210,26 @@ def deque_update(deque):
         temp.update(left, top)
         deque.append(temp)
 
-
+def checkHighScore(currentScore = 0):
+    try:
+        file = open('hiScore.txt', 'r') 
+        lastScore = int(file.read())
+        file.close()
+        if currentScore > lastScore:
+            with open('hiScore.txt', 'w') as f:
+                f.write(str(currentScore))
+            lastScore = currentScore
+    except FileNotFoundError:
+        with open('hiScore.txt', 'w') as f:
+            f.write(str(currentScore))
+            f.close()
+        lastScore = currentScore
+    return lastScore
+        
 def reset():
     bird.reset(bird_start_x, bird_start_y)
     scoreboard.update(0)
+    hiScoreboard.update(checkHighScore())
     reset_pipes()
     all_sprites.draw(game_display)
     pygame.display.update()
@@ -236,6 +256,7 @@ def dead_state():
         draw_all_sprites()
         game_display.blit(gameover_image, gameover_image_rect)
         scoreboard.update()
+        hiScoreboard.update(checkHighScore())
         pygame.display.update()
         clock.tick(tick_rate)
 
@@ -246,6 +267,8 @@ def play_state():
     current_pipe = pipes[0] #Current pipe that the bird must fly through
     score = 0 #Keep track of the players score
     scoreboard.update(score)
+    
+    # load hi score here?
     
     running = True
     while running:
@@ -284,6 +307,12 @@ def play_state():
             bird.velocity = 0
             running = False
 
+            # check if current score is greater than high score
+            # if so then record
+            lastScore = checkHighScore(score)
+   
+            hiScoreboard.update(lastScore)
+            pygame.display.update()
     return dead_state
 
 def get_ready_state():
