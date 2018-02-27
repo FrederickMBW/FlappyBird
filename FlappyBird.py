@@ -1,8 +1,20 @@
-#TODOs
+########################################################
+#   Flappy Bird
+#
+#   Revision: 1.0
+#
+#   Authors:
+#       Federick Wertz
+#       Garth Scheck
+#
+########################################################
+
+
+#TODOs Future
 #Add exceptions when images are loaded
 #Add exceptions for when illegal functions are passed to an object
 #Encapsulation of objects
-#Add sounds!
+#Add more sounds!
 #Add the ability to exit the game?
 #Make the red pipes appear randomly?
 #Increase the difficulty of the game based on score?
